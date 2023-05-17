@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mi Aplicación Django</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <div style="text-align:center;">
+        <img class="logo-img" src="{% static 'img/logo.png' %}" alt="Logo">
+    </div>
+    <h1 style="text-align:center;">Bienvenido a Mi Aplicación Django!</h1>
+    <p>Esta es la página de inicio.</p>
+    <!-- Añade un enlace a la página de registro -->
+    <p>¿No tienes una cuenta? <a href="{% url 'register' %}">Regístrate aquí</a>.</p>
+    <p>¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>.</p>
+    <p>¿Quieres cerrar la sesión? <a href="{% url 'logout' %}">Cierra la sesión aquí</a>.</p>
+
+    {% block content %}{% endblock %}
+</body>
+</html>
+
+
+
