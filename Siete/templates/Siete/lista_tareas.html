@@ -1,0 +1,25 @@
+{% extends 'inicio.html' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Tareas</title>
+</head>
+<body>
+    <h1>Lista de Tareas Pendientes</h1>
+    <a href="{% url 'Siete:crear_tarea' %}">Agregar Tarea</a>
+    <ul>
+        {% for tarea in tareas %}
+            <li>
+                <strong>{{ tarea.titulo }}</strong> - {{ tarea.fecha_vencimiento }}
+                <a href="{% url 'Siete:ver_tarea' tarea.id %}">Ver</a>
+            </li>
+        {% empty %}
+            <li>No hay tareas pendientes.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+{% endblock %}

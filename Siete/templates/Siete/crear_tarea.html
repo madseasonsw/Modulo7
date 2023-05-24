@@ -1,0 +1,10 @@
+{% extends 'inicio.html' %}
+
+{% block content %}
+    <h1>Crear Nueva Tarea</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Crear Tarea">
+    </form>
+{% endblock %}
