@@ -2,6 +2,13 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Tarea
+from .models import Etiqueta
+
+
+
+class FiltroTareasForm(forms.Form):
+    nombre = forms.CharField(required=False)
+    etiqueta = forms.ModelChoiceField(queryset=Etiqueta.objects.none(), required=False)
 
 
 
@@ -25,6 +32,9 @@ class TareaForm(forms.ModelForm):
 
     class Meta:
         model = Tarea
-        fields = ['nombre', 'descripcion', 'fecha_vencimiento']
+        fields = ['nombre', 'descripcion', 'fecha_vencimiento', 'etiquetas', 'observaciones']
+        widgets = {
+            'etiquetas': forms.CheckboxSelectMultiple
+        }
 
 

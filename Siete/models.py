@@ -16,6 +16,7 @@ class Tarea(models.Model):
     completada = models.BooleanField(default=False)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     etiquetas = models.ManyToManyField(Etiqueta, blank=True)
+    observaciones = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.nombre

@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from .forms import NewUserForm
-from .models import Tarea
-from .forms import TareaForm
+from .models import Tarea, Etiqueta
+from .forms import FiltroTareasForm, TareaForm, NewUserForm
+
 from django.utils import timezone
 
 def inicio(request):
@@ -43,10 +43,26 @@ def bienvenido(request):
         return redirect("Siete:login")
     
 
-@login_required(login_url='login')  # Requiere inicio de sesión para acceder a la vista
+@login_required(login_url='login')
 def lista_tareas(request):
+    # Inicialmente, obtén todas las tareas del usuario
     tareas = Tarea.objects.filter(usuario=request.user, completada=False).order_by('fecha_vencimiento')
-    return render(request, 'Siete/lista_tareas.html', {'tareas': tareas})
+
+    # Crea un formulario FiltroTareasForm con las etiquetas del usuario actual
+    form = FiltroTareasForm()
+    form.fields['etiqueta'].queryset = Etiqueta.objects.filter(usuario=request.user)
+
+    # Si se envió una solicitud POST, aplica el filtro
+    if request.method == 'POST':
+        form = FiltroTareasForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['nombre']:
+                tareas = tareas.filter(nombre__icontains=form.cleaned_data['nombre'])
+            if form.cleaned_data['etiqueta']:
+                tareas = tareas.filter(etiquetas=form.cleaned_data['etiqueta'])
+
+    return render(request, 'Siete/lista_tareas.html', {'form': form, 'tareas': tareas})
+
 
 def ver_tarea(request, id_tarea):
     tarea = Tarea.objects.get(id=id_tarea)
@@ -56,13 +72,14 @@ def editar_tarea(request, id_tarea):
     tarea = Tarea.objects.get(id=id_tarea)
 
     if request.method == 'POST':
-        tarea.nombre = request.POST['nombre']
-        tarea.descripcion = request.POST['descripcion']
-        # Asegúrate de actualizar cualquier otro campo que necesites
-        tarea.save()
-        return redirect('Siete:ver_tarea', id_tarea=tarea.id)
+        form = TareaForm(request.POST, instance=tarea)
+        if form.is_valid():
+            tarea = form.save()
+            return redirect('Siete:ver_tarea', id_tarea=tarea.id)
+    else:
+        form = TareaForm(instance=tarea)
 
-    return render(request, 'Siete/editar_tarea.html', {'tarea': tarea})
+    return render(request, 'Siete/editar_tarea.html', {'form': form})
 
 def eliminar_tarea(request, id_tarea):
     tarea = Tarea.objects.get(id=id_tarea)
@@ -75,6 +92,7 @@ def completar_tarea(request, id_tarea):
     tarea.save()
     return redirect('Siete:ver_tarea', id_tarea=tarea.id)
 
+# views.py
 @login_required(login_url='login')
 def crear_tarea(request):
     if request.method == 'POST':
@@ -83,8 +101,10 @@ def crear_tarea(request):
             tarea = form.save(commit=False)
             tarea.usuario = request.user
             tarea.save()
+            form.save_m2m()  # Para guardar las relaciones ManyToMany
             return redirect('Siete:lista_tareas')
     else:
         form = TareaForm()
     
     return render(request, 'Siete/crear_tarea.html', {'form': form})
+
