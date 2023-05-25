@@ -49,19 +49,18 @@ def lista_tareas(request):
     tareas = Tarea.objects.filter(usuario=request.user, completada=False).order_by('fecha_vencimiento')
 
     # Crea un formulario FiltroTareasForm con las etiquetas del usuario actual
-    form = FiltroTareasForm()
+    form = FiltroTareasForm(request.GET or None)
     form.fields['etiqueta'].queryset = Etiqueta.objects.filter(usuario=request.user)
 
-    # Si se envió una solicitud POST, aplica el filtro
-    if request.method == 'POST':
-        form = FiltroTareasForm(request.POST)
-        if form.is_valid():
-            if form.cleaned_data['nombre']:
-                tareas = tareas.filter(nombre__icontains=form.cleaned_data['nombre'])
-            if form.cleaned_data['etiqueta']:
-                tareas = tareas.filter(etiquetas=form.cleaned_data['etiqueta'])
+    # Si el formulario es válido, aplica el filtro
+    if form.is_valid():
+        if form.cleaned_data['titulo']:
+            tareas = tareas.filter(nombre__icontains=form.cleaned_data['titulo'])
+        if form.cleaned_data['etiqueta']:
+            tareas = tareas.filter(etiquetas=form.cleaned_data['etiqueta'])
 
     return render(request, 'Siete/lista_tareas.html', {'form': form, 'tareas': tareas})
+
 
 
 def ver_tarea(request, id_tarea):
