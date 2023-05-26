@@ -1,15 +1,23 @@
 {% extends 'inicio.html' %}
 
 {% block content %}
-    <h1>{{ tarea.titulo }}</h1>
+    <h1>{{ tarea.nombre }}</h1>
     <p>Descripción: {{ tarea.descripcion }}</p>
     <p>Fecha de creación: {{ tarea.fecha_creacion }}</p>
     <p>Fecha de vencimiento: {{ tarea.fecha_vencimiento }}</p>
     <p>Completada: {{ tarea.completada }}</p>
-    
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Guardar Observaciones">
+    </form>
+
     <!-- Botones para las acciones -->
     <a href="{% url 'Siete:editar_tarea' tarea.id %}">Editar</a>
     <a href="{% url 'Siete:eliminar_tarea' tarea.id %}" onclick="return confirm('¿Estás seguro que quieres eliminar esta tarea?');">Eliminar</a>
     <a href="{% url 'Siete:completar_tarea' tarea.id %}">Completar</a>
     <a href="{% url 'Siete:lista_tareas' %}">Retornar a la lista de tareas</a>
 {% endblock %}
+
+

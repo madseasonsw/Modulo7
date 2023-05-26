@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from .models import Tarea, Etiqueta
 from .forms import FiltroTareasForm, TareaForm, NewUserForm
-
+from django.shortcuts import get_object_or_404
+from .forms import ObservacionForm
 from django.utils import timezone
 
 def inicio(request):
@@ -63,9 +64,24 @@ def lista_tareas(request):
 
 
 
+# views.py
+@login_required(login_url='login')
 def ver_tarea(request, id_tarea):
-    tarea = Tarea.objects.get(id=id_tarea)
-    return render(request, 'Siete/ver_tarea.html', {'tarea': tarea})
+    tarea = get_object_or_404(Tarea, id=id_tarea)
+    
+    if tarea.usuario != request.user:
+        return HttpResponseForbidden()
+
+    if request.method == 'POST':
+        form = ObservacionForm(request.POST, instance=tarea)
+        if form.is_valid():
+            form.save()
+            return redirect('Siete:lista_tareas')  # Redirecciona a la vista de lista de tareas
+    else:
+        form = ObservacionForm(instance=tarea)
+
+    return render(request, 'Siete/ver_tarea.html', {'form': form, 'tarea': tarea})
+
 
 def editar_tarea(request, id_tarea):
     tarea = Tarea.objects.get(id=id_tarea)
@@ -80,16 +96,26 @@ def editar_tarea(request, id_tarea):
 
     return render(request, 'Siete/editar_tarea.html', {'form': form})
 
+@login_required(login_url='login')
 def eliminar_tarea(request, id_tarea):
-    tarea = Tarea.objects.get(id=id_tarea)
+    tarea = get_object_or_404(Tarea, id=id_tarea)
+
+    if tarea.usuario != request.user:
+        return HttpResponseForbidden()
+
     tarea.delete()
     return redirect('Siete:lista_tareas')
 
+@login_required(login_url='login')
 def completar_tarea(request, id_tarea):
-    tarea = Tarea.objects.get(id=id_tarea)
+    tarea = get_object_or_404(Tarea, id=id_tarea)
+
+    if tarea.usuario != request.user:
+        return HttpResponseForbidden()
+
     tarea.completada = True
     tarea.save()
-    return redirect('Siete:ver_tarea', id_tarea=tarea.id)
+    return redirect('Siete:lista_tareas')
 
 # views.py
 @login_required(login_url='login')

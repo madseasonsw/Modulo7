@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 from .models import Tarea
 from .models import Etiqueta
 
+class ObservacionForm(forms.ModelForm):
+    class Meta:
+        model = Tarea
+        fields = ['observacion']  # Asegúrate de que 'observacion' sea un campo en tu modelo Tarea
+
 
 
 class FiltroTareasForm(forms.Form):
