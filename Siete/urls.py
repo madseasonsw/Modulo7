@@ -19,5 +19,5 @@ urlpatterns = [
     path('tarea/<int:id_tarea>/eliminar/', views.eliminar_tarea, name='eliminar_tarea'),
     path('tarea/<int:id_tarea>/completar/', views.completar_tarea, name='completar_tarea'),
 ]
-]
+
 
