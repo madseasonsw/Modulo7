@@ -6,10 +6,12 @@
     <p>Fecha de creación: {{ tarea.fecha_creacion }}</p>
     <p>Fecha de vencimiento: {{ tarea.fecha_vencimiento }}</p>
     <p>Completada: {{ tarea.completada }}</p>
+    <p>Prioridad: {{ tarea.get_prioridad_display }}</p>
+    <p>Asignada a: {{ tarea.usuario_asignado.username }}</p>
 
     <form method="POST">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <input type="submit" value="Guardar Observaciones">
     </form>
 
@@ -19,5 +21,6 @@
     <a href="{% url 'Siete:completar_tarea' tarea.id %}">Completar</a>
     <a href="{% url 'Siete:lista_tareas' %}">Retornar a la lista de tareas</a>
 {% endblock %}
+
 
 

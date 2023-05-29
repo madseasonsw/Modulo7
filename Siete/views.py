@@ -6,6 +6,12 @@ from .forms import FiltroTareasForm, TareaForm, NewUserForm
 from django.shortcuts import get_object_or_404
 from .forms import ObservacionForm
 from django.utils import timezone
+from django.http import HttpResponseForbidden   # Import HttpResponseForbidden
+from django.contrib.auth.models import User
+
+
+# Resto de tu código...
+
 
 def inicio(request):
     return render(request, 'inicio.html')
@@ -16,7 +22,7 @@ def register_request(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect("bienvenido") 
+            return redirect("Siete:bienvenido") 
         else:
             for msg in form.error_messages:
                 print(form.error_messages[msg])
@@ -130,6 +136,6 @@ def crear_tarea(request):
             return redirect('Siete:lista_tareas')
     else:
         form = TareaForm()
-    
+        form.fields['usuario_asignado'].queryset = User.objects.exclude(id=request.user.id)
     return render(request, 'Siete/crear_tarea.html', {'form': form})
 

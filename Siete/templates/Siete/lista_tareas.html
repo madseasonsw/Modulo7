@@ -18,7 +18,7 @@
     <ul>
         {% for tarea in tareas %}
             <li>
-                <strong>{{ tarea.nombre }}</strong> - {{ tarea.fecha_vencimiento }}
+                <strong>{{ tarea.nombre }}</strong> - {{ tarea.fecha_vencimiento }} - Prioridad: {{ tarea.prioridad.nombre|default:"No establecida" }} - Asignada a: {{ tarea.usuario_asignado.username }}
                 <a href="{% url 'Siete:ver_tarea' tarea.id %}">Ver</a>
                 <a href="{% url 'Siete:editar_tarea' tarea.id %}">Editar</a>
             </li>
@@ -29,3 +29,5 @@
 </body>
 </html>
 {% endblock %}
+
+

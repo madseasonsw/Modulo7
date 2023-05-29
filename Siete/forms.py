@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Tarea
 from .models import Etiqueta
+from .models import Prioridad
+
 
 class ObservacionForm(forms.ModelForm):
     class Meta:
@@ -34,12 +36,14 @@ class NewUserForm(UserCreationForm):
 
 class TareaForm(forms.ModelForm):
     fecha_vencimiento = forms.DateField(widget=forms.SelectDateWidget)
+    usuario_asignado = forms.ModelChoiceField(queryset=User.objects.all())
 
     class Meta:
         model = Tarea
-        fields = ['nombre', 'descripcion', 'fecha_vencimiento', 'etiquetas', 'observaciones']
+        fields = ['nombre', 'descripcion', 'fecha_vencimiento', 'etiquetas', 'observaciones', 'usuario_asignado', 'prioridad']
         widgets = {
             'etiquetas': forms.CheckboxSelectMultiple
         }
+
 
 

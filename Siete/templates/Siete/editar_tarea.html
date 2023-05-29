@@ -1,21 +1,10 @@
 {% extends 'inicio.html' %}
 
 {% block content %}
-
-
 <form method="post">
     {% csrf_token %}
-    <label for="nombre">Nombre:</label>
-    <input id="nombre" type="text" name="nombre" value="{{ tarea.nombre }}">
-    <label for="descripcion">Descripcion:</label>
-    <textarea id="descripcion" name="descripcion">{{ tarea.descripcion }}</textarea>
-    <!-- Asegúrate de incluir campos para cualquier otro dato que desees editar -->
+    {{ form.as_p }}
     <button type="submit">Guardar cambios</button>
-    <!-- ... tus otros campos del formulario van aquí ... -->
-    <label for="id_observaciones">Observaciones:</label>
-    <textarea id="id_observaciones" name="observaciones">{{ tarea.observaciones }}</textarea>
-    <!-- ... -->
-    <input type="submit" value="Actualizar tarea">
 </form>
-
 {% endblock %}
+
